@@ -1,0 +1,84 @@
+#include<iostream>
+#include<cstdint>
+#include<vector>
+
+using namespace std;
+
+using ll=int64_t;
+
+vector<int> mp={2,3,5,7,11,13,17,19,23,29};
+
+ll p0(ll x) {
+    ll sum=0;
+    while ((x&1)==0) {
+        sum++;
+        x=x>>1;
+    }
+    return sum;
+}
+
+ll kuaimi(ll a,ll x,ll p) {
+    ll b=a,sum=1;;
+    while (x) {
+        if ((x&1)==1) {
+            sum=(ll)((__int128)sum%p*b%p)%p;
+        }
+        b=(ll)((__int128)b%p*b%p)%p;
+        x=x>>1;
+    }
+    return sum%p;
+}
+
+bool p1(ll a,ll p) {
+if (kuaimi(a,p-1,p)!=1) {
+    return true;
+}
+    return false;
+}//出现不是1的直接返回true
+
+bool pl(ll a,ll p) {
+ll x=p0(p-1),y=(p-1)>>x,w=kuaimi(a,y,p);
+    if (w==1||w==p-1) {
+        return true;
+    }
+    while (x--) {
+        w=kuaimi(w,2,p);
+        if (w==1||w==p-1) {
+            return true;
+        }
+    }
+    return false;
+}//如果是1或者-1就立刻返回true，如果没有就返回false
+
+bool solve(ll x) {
+    for (auto y:mp) {
+        if (x==y) {
+            return true;
+        }
+        if (x%y==0) {
+            return false;
+        }
+    }
+    for (auto y:mp) {
+        if (p1(y,x)) {
+            return false;
+        }
+    }
+    for (auto y:mp) {
+        if (!pl(y,x)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    ll x;
+    cin>>x;
+   if (solve(x)) {
+       cout<<"yes"<<endl;
+   }else {
+       cout<<"no";
+   }
+        return 0;
+}
